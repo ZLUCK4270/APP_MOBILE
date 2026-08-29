@@ -1,0 +1,27 @@
+# ECOLIM S.A.C. — Backend API Dependencies
+# Instalar: pip install -r requirements.txt
+
+# Framework web ASGI de alto rendimiento
+fastapi==0.115.0
+
+# Servidor ASGI para ejecutar FastAPI
+uvicorn[standard]==0.30.6
+
+# Validación de datos (incluido con FastAPI)
+pydantic==2.9.0
+
+# Generación de reportes PDF
+reportlab==4.2.2
+
+# Análisis de datos y generación de Excel
+pandas==2.2.2
+openpyxl==3.1.5
+
+# SDK de Firebase Admin (para integración con Firestore en producción)
+# firebase-admin==6.5.0
+
+# Utilidades HTTP
+httpx==0.27.2
+
+# Manejo de subida de archivos (Imágenes/Fotos)
+python-multipart==0.0.9

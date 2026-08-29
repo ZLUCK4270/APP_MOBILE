@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Directorio interno de la app para reportes exportados -->
+    <files-path name="reportes" path="reportes/" />
+    <cache-path name="cache" path="/" />
+</paths>

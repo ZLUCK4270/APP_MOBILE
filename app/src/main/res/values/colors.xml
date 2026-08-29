@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta corporativa ECOLIM -->
+    <color name="ecolim_primary">#1B5E20</color>
+    <color name="ecolim_primary_light">#C8E6C9</color>
+    <color name="ecolim_primary_dark">#0D3B13</color>
+    <color name="ecolim_accent">#F57F17</color>
+    <color name="ecolim_background">#F4F7F6</color>
+    <color name="ecolim_text_primary">#333333</color>
+    <color name="ecolim_text_secondary">#757575</color>
+    <color name="ecolim_danger">#D32F2F</color>
+    <color name="ecolim_success">#4CAF50</color>
+    <color name="ecolim_warning">#F57F17</color>
+    <color name="ecolim_sync_pending">#F44336</color>
+    <color name="ecolim_sync_done">#2E7D32</color>
+</resources>

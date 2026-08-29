@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.example.android.DashboardFragment"
+        android:label="Dashboard" />
+
+    <fragment
+        android:id="@+id/nav_recoleccion"
+        android:name="com.example.android.RecoleccionFragment"
+        android:label="Recoleccion" />
+
+    <fragment
+        android:id="@+id/nav_reportes"
+        android:name="com.example.android.ReportesFragment"
+        android:label="Reportes" />
+
+    <fragment
+        android:id="@+id/nav_scanner"
+        android:name="com.example.android.ScannerFragment"
+        android:label="Scanner" />
+
+</navigation>

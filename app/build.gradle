@@ -1,0 +1,61 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.example.android'
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        applicationId "com.example.android"
+        minSdk 24
+        targetSdk 37
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable false
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation libs.activity.ktx
+    implementation libs.appcompat
+    implementation libs.constraintlayout
+    implementation libs.material
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+    testImplementation libs.junit
+    androidTestImplementation libs.espresso.core
+    androidTestImplementation libs.ext.junit
+    
+    // Navigation Component
+    implementation "androidx.navigation:navigation-fragment:2.7.7"
+    implementation "androidx.navigation:navigation-ui:2.7.7"
+
+    // OkHttp — Cliente HTTP para comunicación con API REST
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+
+    // Gson — Serialización/deserialización JSON
+    implementation "com.google.code.gson:gson:2.11.0"
+
+    // ZXing — Escaneo de códigos QR/barras
+    implementation "com.journeyapps:zxing-android-embedded:4.3.0"
+
+    // Lifecycle — ViewModel y LiveData para MVVM
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.8.4"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.8.4"
+}

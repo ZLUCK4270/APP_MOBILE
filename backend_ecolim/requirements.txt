@@ -1,4 +1,5 @@
 # ECOLIM S.A.C. — Backend API v2.0 Dependencies
+# Python requerido: 3.11.x (ver .python-version)
 # Instalar: pip install -r requirements.txt
 
 # Framework web ASGI
@@ -7,8 +8,9 @@ fastapi==0.115.0
 # Servidor ASGI
 uvicorn[standard]==0.30.6
 
-# Validacion de datos
-pydantic==2.9.0
+# Validacion de datos — version con wheels pre-compilados para Python 3.11
+pydantic==2.9.2
+pydantic-core==2.23.4
 
 # Cliente HTTP asincrono (para Google Cloud Vision API)
 httpx==0.27.2

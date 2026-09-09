@@ -1,18 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.ANDROID" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/ecolim_primary</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/ecolim_primary_light</item>
-        <item name="colorOnPrimaryContainer">@color/ecolim_primary_dark</item>
+        <!-- Primary Brand Colors -->
+        <item name="colorPrimary">@color/eco_primary</item>
+        <item name="colorOnPrimary">@color/eco_surface</item>
+        <item name="colorPrimaryContainer">@color/eco_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/eco_primary_dark</item>
         
-        <item name="colorSecondary">@color/ecolim_accent</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <!-- Secondary Brand Colors -->
+        <item name="colorSecondary">@color/eco_secondary</item>
+        <item name="colorOnSecondary">@color/eco_surface</item>
+        <item name="colorSecondaryContainer">@color/eco_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/eco_text_primary</item>
         
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/ecolim_text_primary</item>
+        <!-- Tertiary Brand Colors -->
+        <item name="colorTertiary">@color/eco_tertiary_accent</item>
+        <item name="colorOnTertiary">@color/eco_surface</item>
         
-        <item name="colorError">@color/ecolim_danger</item>
+        <!-- Surface and Background -->
+        <item name="android:colorBackground">@color/eco_background</item>
+        <item name="colorSurface">@color/eco_surface</item>
+        <item name="colorOnSurface">@color/eco_text_primary</item>
+        <item name="colorSurfaceVariant">@color/eco_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/eco_text_secondary</item>
+        
+        <!-- Outline -->
+        <item name="colorOutline">@color/eco_text_secondary</item>
+        
+        <!-- Error -->
+        <item name="colorError">@color/eco_danger</item>
+        <item name="colorOnError">@color/eco_surface</item>
     </style>
 
     <style name="Theme.ANDROID" parent="Base.Theme.ANDROID" />

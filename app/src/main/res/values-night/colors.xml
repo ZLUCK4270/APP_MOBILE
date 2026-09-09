@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================== -->
+    <!-- ECOLIMP DESIGN SYSTEM (DESIGN TOKENS) - DARK   -->
+    <!-- ============================================== -->
+
+    <color name="eco_primary">#81C995</color>
+    <color name="eco_primary_container">#0D3B13</color>
+    <color name="eco_primary_dark">#1B5E20</color>
+
+    <color name="eco_secondary">#4DD0E1</color>
+    <color name="eco_secondary_container">#006064</color>
+
+    <color name="eco_tertiary_accent">#FFB300</color>
+
+    <color name="eco_background">#121512</color>
+    <color name="eco_surface">#1C211D</color>
+    <color name="eco_surface_variant">#2A302B</color>
+
+    <color name="eco_text_primary">#E3E8E3</color>
+    <color name="eco_text_secondary">#A9B4A9</color>
+
+    <!-- Semantic States -->
+    <color name="eco_success">#81C995</color>
+    <color name="eco_warning">#FFD54F</color>
+    <color name="eco_danger">#EF5350</color>
+
+    <color name="eco_sync_pending_bg">#4E342E</color>
+    <color name="eco_sync_done_bg">#1B5E20</color>
+</resources>

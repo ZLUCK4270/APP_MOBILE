@@ -1,19 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Basic Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Paleta corporativa ECOLIM -->
-    <color name="ecolim_primary">#1B5E20</color>
-    <color name="ecolim_primary_light">#C8E6C9</color>
-    <color name="ecolim_primary_dark">#0D3B13</color>
-    <color name="ecolim_accent">#F57F17</color>
-    <color name="ecolim_background">#F4F7F6</color>
-    <color name="ecolim_text_primary">#333333</color>
-    <color name="ecolim_text_secondary">#757575</color>
-    <color name="ecolim_danger">#D32F2F</color>
-    <color name="ecolim_success">#4CAF50</color>
-    <color name="ecolim_warning">#F57F17</color>
-    <color name="ecolim_sync_pending">#F44336</color>
-    <color name="ecolim_sync_done">#2E7D32</color>
+    <!-- ============================================== -->
+    <!-- ECOLIMP DESIGN SYSTEM (DESIGN TOKENS) - LIGHT  -->
+    <!-- ============================================== -->
+
+    <color name="eco_primary">#1B5E20</color>
+    <color name="eco_primary_container">#B9F6CA</color>
+    <color name="eco_primary_dark">#0D3B13</color>
+
+    <color name="eco_secondary">#00838F</color>
+    <color name="eco_secondary_container">#B2EBF2</color>
+
+    <color name="eco_tertiary_accent">#F57F17</color>
+
+    <color name="eco_background">#F4F7F6</color>
+    <color name="eco_surface">#FFFFFF</color>
+    <color name="eco_surface_variant">#E7F0EC</color>
+
+    <color name="eco_text_primary">#1B1F1C</color>
+    <color name="eco_text_secondary">#5C6B62</color>
+
+    <!-- Semantic States -->
+    <color name="eco_success">#2E7D32</color>
+    <color name="eco_warning">#F9A825</color>
+    <color name="eco_danger">#C62828</color>
+
+    <color name="eco_sync_pending_bg">#FFF3E0</color>
+    <color name="eco_sync_done_bg">#E8F5E9</color>
+
+    <!-- ============================================== -->
+    <!-- ALIASES (Legacy Compatibility)                 -->
+    <!-- ============================================== -->
+    <color name="ecolim_primary">@color/eco_primary</color>
+    <color name="ecolim_primary_light">@color/eco_primary_container</color>
+    <color name="ecolim_primary_dark">@color/eco_primary_dark</color>
+    <color name="ecolim_accent">@color/eco_tertiary_accent</color>
+    <color name="ecolim_background">@color/eco_background</color>
+    <color name="ecolim_text_primary">@color/eco_text_primary</color>
+    <color name="ecolim_text_secondary">@color/eco_text_secondary</color>
+    <color name="ecolim_danger">@color/eco_danger</color>
+    <color name="ecolim_success">@color/eco_success</color>
+    <color name="ecolim_warning">@color/eco_warning</color>
+    <color name="ecolim_sync_pending">@color/eco_sync_pending_bg</color>
+    <color name="ecolim_sync_done">@color/eco_sync_done_bg</color>
 </resources>

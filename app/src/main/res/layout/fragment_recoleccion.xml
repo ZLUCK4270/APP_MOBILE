@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?attr/colorSurface">
+    android:background="?android:attr/colorBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="120dp"
             app:cardBackgroundColor="?attr/colorPrimaryContainer"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:strokeWidth="0dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,13 +32,14 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@android:drawable/ic_menu_camera"
+                    android:src="@drawable/ic_scan"
                     app:tint="?attr/colorOnPrimaryContainer"/>
                 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ESCANEAR CONTENEDOR"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp"
                     android:textColor="?attr/colorOnPrimaryContainer"/>
@@ -50,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ingreso Manual"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textAppearance="@style/TextAppearance.App.TitleLarge"
             android:textColor="?attr/colorOutline"
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@id/cardScan"
@@ -63,6 +64,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Cliente / Sede"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             app:layout_constraintTop_toBottomOf="@id/tvDivider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -70,6 +75,7 @@
                 android:id="@+id/actvCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
         
@@ -80,6 +86,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Tipo de Residuo"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             app:layout_constraintTop_toBottomOf="@id/tilCliente"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -87,6 +97,7 @@
                 android:id="@+id/actvResiduo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,12 +119,17 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:hint="Peso (Kg)"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
                 app:endIconMode="clear_text">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPeso"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:fontFamily="@font/manrope"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -124,12 +140,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
                 android:hint="Volumen (m³)">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etVolumen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:fontFamily="@font/manrope"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -142,6 +163,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Observaciones (Opcional)"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             app:layout_constraintTop_toBottomOf="@id/llMedidas"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -149,6 +174,7 @@
                 android:id="@+id/etObservacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:inputType="textMultiLine"
                 android:minLines="2"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -159,9 +185,9 @@
             android:layout_height="64dp"
             android:layout_marginTop="32dp"
             android:text="GUARDAR REGISTRO"
-            android:textSize="18sp"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:textStyle="bold"
-            app:icon="@android:drawable/ic_menu_save"
+            app:icon="@drawable/ic_reports"
             app:iconGravity="textStart"
             app:cornerRadius="12dp"
             app:layout_constraintTop_toBottomOf="@id/tilObservacion"

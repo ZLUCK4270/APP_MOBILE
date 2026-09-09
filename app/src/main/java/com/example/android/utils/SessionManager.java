@@ -13,12 +13,26 @@ public class SessionManager {
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
 
-    /**
-     * Constructor: Inicializa SharedPreferences en modo privado.
-     * @param context Contexto de la Activity o Fragment
-     */
     public SessionManager(Context context) {
-        prefs = context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences securePrefs = null;
+        try {
+            androidx.security.crypto.MasterKey masterKey = new androidx.security.crypto.MasterKey.Builder(context)
+                    .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            securePrefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    context,
+                    Constants.PREFS_NAME,
+                    masterKey,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            // Fallback en caso de error crítico con Keystore (poco probable, pero manejado)
+            e.printStackTrace();
+            securePrefs = context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        }
+        prefs = securePrefs;
         editor = prefs.edit();
     }
 

@@ -12,9 +12,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // El activity_main optimizado que te pasé
-
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        setContentView(R.layout.activity_main); // El activity_main optimizado        // Inicializar vistas
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         
         if (navHostFragment != null) {

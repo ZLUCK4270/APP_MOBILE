@@ -461,8 +461,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
 
                 // Retornar al UI thread
+                final int finalCount = count;
                 new Handler(Looper.getMainLooper())
-                        .post(() -> callback.onResult(true, count));
+                        .post(() -> callback.onResult(true, finalCount));
 
             } catch (InterruptedException e) {
                 new Handler(Looper.getMainLooper())

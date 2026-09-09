@@ -20,6 +20,16 @@ import com.example.android.models.Reporte;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.graphics.pdf.PdfDocument;
+import android.graphics.Paint;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import android.net.Uri;
+import androidx.core.content.FileProvider;
+import android.content.Intent;
+
 
 /**
  * ReportesFragment — Historial de recolecciones con filtros dinámicos.
@@ -98,9 +108,7 @@ public class ReportesFragment extends Fragment {
 
         // Botón exportar/compartir
         btnExportar.setOnClickListener(v -> {
-            Toast.makeText(getContext(),
-                    "Generando reporte PDF...\n(Requiere conexión con API)",
-                    Toast.LENGTH_LONG).show();
+            generarYCompartirPDF();
         });
     }
 
@@ -154,5 +162,98 @@ public class ReportesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         cargarReportes(); // Refrescar al volver a esta pestaña
+    }
+
+    /**
+     * Genera un reporte PDF con los datos actuales del RecyclerView y abre 
+     * un Intent para compartirlo usando FileProvider.
+     */
+    private void generarYCompartirPDF() {
+        if (adapter.getItemCount() == 0) {
+            Toast.makeText(getContext(), "No hay datos para exportar", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create(); // A4
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+        Paint paint = new Paint();
+        
+        // Título
+        paint.setTextSize(24);
+        paint.setColor(Color.BLACK);
+        canvas.drawText("Reporte de Recolección de Residuos", 40, 50, paint);
+        
+        // Filtros aplicados
+        paint.setTextSize(14);
+        canvas.drawText("Filtros: Fecha=" + (fechaSeleccionada.isEmpty() ? "Todas" : fechaSeleccionada) + 
+                        ", Tipo=" + actvResiduoFiltro.getText().toString(), 40, 80, paint);
+
+        // Cabecera tabla
+        paint.setTextSize(12);
+        paint.setFakeBoldText(true);
+        canvas.drawText("ID", 40, 120, paint);
+        canvas.drawText("Fecha", 80, 120, paint);
+        canvas.drawText("Cliente", 180, 120, paint);
+        canvas.drawText("Residuo", 320, 120, paint);
+        canvas.drawText("Peso/Vol", 460, 120, paint);
+        paint.setFakeBoldText(false);
+
+        // Datos
+        int y = 140;
+        Cursor cursor = dbHelper.obtenerReportes(fechaSeleccionada, actvResiduoFiltro.getText().toString());
+        if (cursor.moveToFirst()) {
+            do {
+                if (y > 800) {
+                    // Manejo simple de paginación o corte (simplificado para MVP)
+                    canvas.drawText("... más registros (PDF truncado)", 40, y, paint);
+                    break;
+                }
+                canvas.drawText(String.valueOf(cursor.getInt(0)), 40, y, paint);
+                canvas.drawText(cursor.getString(5), 80, y, paint);
+                String cliente = cursor.getString(1);
+                if(cliente.length() > 15) cliente = cliente.substring(0, 15) + "...";
+                canvas.drawText(cliente, 180, y, paint);
+                String residuo = cursor.getString(2);
+                if(residuo.length() > 15) residuo = residuo.substring(0, 15) + "...";
+                canvas.drawText(residuo, 320, y, paint);
+                canvas.drawText(cursor.getDouble(3) + "kg / " + cursor.getDouble(4) + "m3", 460, y, paint);
+                y += 20;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        document.finishPage(page);
+
+        // Guardar archivo en caché
+        try {
+            File pdfDir = new File(requireContext().getCacheDir(), "reportes");
+            if (!pdfDir.exists()) pdfDir.mkdirs();
+            File file = new File(pdfDir, "Ecolim_Reporte_" + System.currentTimeMillis() + ".pdf");
+            
+            FileOutputStream fos = new FileOutputStream(file);
+            document.writeTo(fos);
+            document.close();
+            fos.close();
+
+            // Compartir con FileProvider
+            Uri pdfUri = FileProvider.getUriForFile(requireContext(), 
+                    requireContext().getApplicationContext().getPackageName() + ".fileprovider", 
+                    file);
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("application/pdf");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            
+            startActivity(Intent.createChooser(shareIntent, "Compartir Reporte PDF"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Error al generar PDF: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            document.close();
+        }
     }
 }

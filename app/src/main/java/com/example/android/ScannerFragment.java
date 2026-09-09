@@ -98,18 +98,21 @@ public class ScannerFragment extends Fragment {
      * Si el formato no coincide, muestra el contenido raw.
      */
     private void procesarCodigoQR(String codigo) {
-        String[] partes = codigo.split(Constants.QR_SEPARATOR);
-
-        if (partes.length >= 3 && partes[0].equals(Constants.QR_PREFIX)) {
-            // Código ECOLIM válido
+        // RegEx estricto: Debe comenzar por ECOLIM|, seguido de ID numérico (1-4 dígitos), 
+        // seguido de | y un nombre alfanumérico. 
+        // Esto evita inyecciones o lecturas basura.
+        String patron = "^ECOLIM\\|\\d{1,4}\\|[\\w\\sáéíóúÁÉÍÓÚ]+$";
+        
+        if (codigo != null && codigo.matches(patron)) {
+            String[] partes = codigo.split(Constants.QR_SEPARATOR);
             String nombreResiduo = partes[2];
             Toast.makeText(getContext(), "Residuo identificado: " + nombreResiduo,
                     Toast.LENGTH_SHORT).show();
             navegarConResiduo(nombreResiduo);
         } else {
-            // Código no reconocido — mostrar contenido
+            // Código no reconocido
             Toast.makeText(getContext(),
-                    "Código escaneado: " + codigo + "\n(Formato no ECOLIM)",
+                    "Código inválido o malformado.\n(Formato no seguro)",
                     Toast.LENGTH_LONG).show();
         }
     }

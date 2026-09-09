@@ -33,7 +33,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="?attr/onPrimaryContainer"/>
+                    app:tint="?attr/colorOnPrimaryContainer"/>
                 
                 <TextView
                     android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                     android:text="ESCANEAR CONTENEDOR"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp"
-                    android:textColor="?attr/onPrimaryContainer"/>
+                    android:textColor="?attr/colorOnPrimaryContainer"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

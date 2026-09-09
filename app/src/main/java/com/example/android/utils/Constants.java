@@ -16,8 +16,8 @@ public class Constants {
     /** URL base para dispositivo físico en red local */
     public static final String API_BASE_URL_LOCAL = "http://192.168.1.100:8000/api/v1";
 
-    /** URL activa — cambiar según entorno de pruebas */
-    public static final String API_BASE_URL = API_BASE_URL_EMULATOR;
+    /** URL activa — apuntando al servidor en producción (Render) */
+    public static final String API_BASE_URL = "https://ecolimp-api.onrender.com/api/v1";
 
     // ============================================================
     // Endpoints de la API

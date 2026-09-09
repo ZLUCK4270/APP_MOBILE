@@ -21,3 +21,4 @@ python-multipart==0.0.9
 # ORM para Base de Datos Real
 sqlalchemy==2.0.21
 passlib[bcrypt]==1.7.4
+email-validator

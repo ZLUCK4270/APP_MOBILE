@@ -196,4 +196,57 @@ public class ApiClient {
             }
         });
     }
+
+    // ============================================================
+    // AUTENTICACIÓN
+    // ============================================================
+
+    public static void registrarUsuario(JSONObject payload, ApiCallback callback) {
+        RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
+        Request request = new Request.Builder()
+                .url(Constants.API_BASE_URL + "/auth/register")
+                .post(body)
+                .build();
+        
+        ejecutarPost(request, callback);
+    }
+
+    public static void loginUsuario(JSONObject payload, ApiCallback callback) {
+        RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
+        Request request = new Request.Builder()
+                .url(Constants.API_BASE_URL + "/auth/login")
+                .post(body)
+                .build();
+        
+        ejecutarPost(request, callback);
+    }
+
+    public static void actualizarPerfil(int userId, JSONObject payload, ApiCallback callback) {
+        RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
+        Request request = new Request.Builder()
+                .url(Constants.API_BASE_URL + "/usuarios/perfil/" + userId)
+                .put(body)
+                .build();
+        
+        ejecutarPost(request, callback);
+    }
+
+    private static void ejecutarPost(Request request, ApiCallback callback) {
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mainHandler.post(() -> callback.onError("Error de red: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body() != null ? response.body().string() : "";
+                if (response.isSuccessful()) {
+                    mainHandler.post(() -> callback.onSuccess(responseBody));
+                } else {
+                    mainHandler.post(() -> callback.onError("Error: " + response.code() + " " + responseBody));
+                }
+            }
+        });
+    }
 }

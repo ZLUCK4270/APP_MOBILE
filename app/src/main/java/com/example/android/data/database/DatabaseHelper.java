@@ -112,12 +112,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ============================================================
-    // 1. AUTENTICACIÓN (Login)
+    // MÉTODOS DE AUTENTICACIÓN LOCAL
     // ============================================================
 
+    public void registrarUsuarioLocal(int userId, String nombre, String correo, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("idUsuario", userId);
+        // Note: the "Usuario" table only has idUsuario, Correo, and Password, so we skip Name
+        values.put("Correo", correo);
+        values.put("Password", password);
+
+        // Intenta actualizar si existe, sino inserta
+        int rows = db.update("Usuario", values, "Correo=?", new String[]{correo});
+        if (rows == 0) {
+            db.insert("Usuario", null, values);
+        }
+        db.close();
+    }
+
     /**
-     * Valida credenciales contra la tabla Usuario.
-     * @return true si las credenciales son válidas
+     * Valida credenciales contra la base de datos local.
      */
     public boolean login(String correo, String password) {
         SQLiteDatabase db = this.getReadableDatabase();

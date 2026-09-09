@@ -2,25 +2,26 @@ package com.example.android.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import com.example.android.api.ApiClient;
 import com.example.android.data.database.DatabaseHelper;
 import com.example.android.utils.SessionManager;
 import com.example.android.MainActivity;
 import com.example.android.R;
 
-/**
- * LoginActivity — Pantalla de autenticación del operario.
- * Es la Activity LAUNCHER (primera pantalla al abrir la app).
- * Valida credenciales contra SQLite (offline) y guarda sesión en SharedPreferences.
- */
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText etCorreo, etPassword;
     MaterialButton btnLogin;
+    TextView tvRegister;
     DatabaseHelper dbHelper;
     SessionManager sessionManager;
 
@@ -28,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Verificar si ya hay sesión activa (evitar login repetitivo)
         sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
             navegarAlDashboard();
@@ -37,18 +37,20 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        // Inicializar componentes
         dbHelper = new DatabaseHelper(this);
         etCorreo = findViewById(R.id.etCorreo);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        tvRegister = findViewById(R.id.tvRegister);
 
-        // Listener del botón de login
+        tvRegister.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        });
+
         btnLogin.setOnClickListener(v -> {
             String correo = etCorreo.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            // Validar campos vacíos
             if (correo.isEmpty()) {
                 etCorreo.setError("Ingrese su correo corporativo");
                 etCorreo.requestFocus();
@@ -60,30 +62,64 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // Validar credenciales contra SQLite
-            if (dbHelper.login(correo, password)) {
-                // Login EXITOSO: Guardar sesión
-                int userId = dbHelper.getUsuarioId(correo);
-                String nombre = dbHelper.getNombreUsuario(correo);
-                sessionManager.crearSesion(userId, nombre, correo, "OPERARIO");
+            btnLogin.setEnabled(false);
+            btnLogin.setText("Validando...");
 
-                Toast.makeText(this, "Bienvenido, " + nombre,
-                        Toast.LENGTH_SHORT).show();
-                navegarAlDashboard();
-            } else {
-                // Login FALLIDO
-                Toast.makeText(this,
-                        "Credenciales incorrectas\n(Usa: admin@ecolim.com / 123456)",
-                        Toast.LENGTH_LONG).show();
+            // Intentar login por API
+            try {
+                JSONObject payload = new JSONObject();
+                payload.put("correo", correo);
+                payload.put("password", password);
+
+                ApiClient.loginUsuario(payload, new ApiClient.ApiCallback() {
+                    @Override
+                    public void onSuccess(String responseBody) {
+                        try {
+                            JSONObject json = new JSONObject(responseBody);
+                            int userId = json.optInt("id_usuario", 1);
+                            String nombre = json.getString("usuario");
+                            String rol = json.getString("rol");
+                            
+                            // Guardar en base local para offline
+                            dbHelper.registrarUsuarioLocal(userId, nombre, correo, password);
+
+                            sessionManager.crearSesion(userId, nombre, correo, rol);
+                            Toast.makeText(LoginActivity.this, "Bienvenido, " + nombre, Toast.LENGTH_SHORT).show();
+                            navegarAlDashboard();
+                        } catch (Exception e) {
+                            fallBackLocal(correo, password);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("LOGIN", "Error API: " + errorMessage);
+                        fallBackLocal(correo, password);
+                    }
+                });
+            } catch (Exception e) {
+                fallBackLocal(correo, password);
             }
         });
     }
 
-    /**
-     * Navega al Dashboard y cierra LoginActivity.
-     */
+    private void fallBackLocal(String correo, String password) {
+        btnLogin.setEnabled(true);
+        btnLogin.setText("Ingresar");
+        
+        if (dbHelper.login(correo, password)) {
+            int userId = dbHelper.getUsuarioId(correo);
+            String nombre = dbHelper.getNombreUsuario(correo);
+            sessionManager.crearSesion(userId, nombre, correo, "OPERARIO");
+            Toast.makeText(this, "Bienvenido (Modo Offline), " + nombre, Toast.LENGTH_SHORT).show();
+            navegarAlDashboard();
+        } else {
+            Toast.makeText(this, "Credenciales incorrectas o sin conexión", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void navegarAlDashboard() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        finish(); // Impedir retroceso al login
+        finish();
     }
 }

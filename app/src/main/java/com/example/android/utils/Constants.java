@@ -17,7 +17,7 @@ public class Constants {
     public static final String API_BASE_URL_LOCAL = "http://192.168.1.100:8000/api/v1";
 
     /** URL activa — apuntando al servidor en producción (Render) */
-    public static final String API_BASE_URL = "https://ecolimp-api.onrender.com/api/v1";
+    public static final String API_BASE_URL = "https://app-mobile-1.onrender.com/api/v1";
 
     // ============================================================
     // Endpoints de la API

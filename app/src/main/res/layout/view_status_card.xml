@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="com.google.android.material.card.MaterialCardView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/cardIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:importantForAccessibility="no"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/cardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.LabelSmall"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cardValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0.0"
+            android:textSize="32sp"
+            android:fontFamily="@font/manrope"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
+            
+        <TextView
+            android:id="@+id/cardUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.LabelSmall" />
+            
+    </LinearLayout>
+</merge>

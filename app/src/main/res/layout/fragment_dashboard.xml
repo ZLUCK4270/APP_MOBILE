@@ -14,6 +14,7 @@
         android:text="Hola, Operario"
         android:textAppearance="@style/TextAppearance.App.TitleLarge"
         android:textColor="?attr/colorPrimary"
+        android:contentDescription="Mensaje de bienvenida"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"/>
@@ -25,6 +26,7 @@
         android:text="Resumen de tu turno actual"
         android:textAppearance="@style/TextAppearance.App.BodyMedium"
         android:textColor="?attr/colorOnSurfaceVariant"
+        android:contentDescription="Subtítulo del resumen"
         app:layout_constraintTop_toBottomOf="@id/tvWelcome"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="4dp"/>
@@ -39,108 +41,32 @@
         app:layout_constraintTop_toBottomOf="@id/tvDate">
 
         <!-- Tarjeta de Peso -->
-        <com.google.android.material.card.MaterialCardView
+        <com.example.android.ui.components.StatusCardView
+            android:id="@+id/cardTotalPeso"
             android:layout_width="0dp"
             android:layout_height="140dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             app:cardBackgroundColor="?attr/colorPrimaryContainer"
-            app:cardCornerRadius="20dp"
-            app:strokeWidth="0dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_recycle"
-                    app:tint="?attr/colorOnPrimaryContainer"
-                    android:layout_marginBottom="4dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PESO TOTAL"
-                    android:textAppearance="@style/TextAppearance.App.LabelSmall"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnPrimaryContainer"/>
-
-                <TextView
-                    android:id="@+id/tvTotalPeso"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0.0"
-                    android:textSize="32sp"
-                    android:fontFamily="@font/manrope"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnPrimaryContainer"
-                    android:layout_marginTop="4dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="kg"
-                    android:textAppearance="@style/TextAppearance.App.LabelSmall"
-                    android:textColor="?attr/colorOnPrimaryContainer"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            app:cardTitle="PESO TOTAL"
+            app:cardUnit="kg"
+            app:cardIcon="@drawable/ic_recycle"
+            app:cardTintColor="?attr/colorOnPrimaryContainer"
+            android:contentDescription="Tarjeta de peso total recolectado"/>
 
         <!-- Tarjeta de Volumen -->
-        <com.google.android.material.card.MaterialCardView
+        <com.example.android.ui.components.StatusCardView
+            android:id="@+id/cardTotalVolumen"
             android:layout_width="0dp"
             android:layout_height="140dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             app:cardBackgroundColor="?attr/colorSecondaryContainer"
-            app:cardCornerRadius="20dp"
-            app:strokeWidth="0dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_truck"
-                    app:tint="?attr/colorOnSecondaryContainer"
-                    android:layout_marginBottom="4dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VOLUMEN TOTAL"
-                    android:textAppearance="@style/TextAppearance.App.LabelSmall"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSecondaryContainer"/>
-
-                <TextView
-                    android:id="@+id/tvTotalVolumen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0.0"
-                    android:textSize="32sp"
-                    android:fontFamily="@font/manrope"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSecondaryContainer"
-                    android:layout_marginTop="4dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="m³"
-                    android:textAppearance="@style/TextAppearance.App.LabelSmall"
-                    android:textColor="?attr/colorOnSecondaryContainer"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            app:cardTitle="VOLUMEN TOTAL"
+            app:cardUnit="m³"
+            app:cardIcon="@drawable/ic_truck"
+            app:cardTintColor="?attr/colorOnSecondaryContainer"
+            android:contentDescription="Tarjeta de volumen total recolectado"/>
 
     </LinearLayout>
 
@@ -155,7 +81,8 @@
         app:cardElevation="1dp"
         app:strokeWidth="1dp"
         app:strokeColor="?attr/colorOutline"
-        app:layout_constraintTop_toBottomOf="@id/llKpis">
+        app:layout_constraintTop_toBottomOf="@id/llKpis"
+        android:contentDescription="Estado actual de sincronización">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -170,7 +97,8 @@
                 app:tint="?attr/colorSecondary"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:importantForAccessibility="no"/>
 
             <TextView
                 android:id="@+id/tvPendingCountTitle"
@@ -202,11 +130,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSyncNow"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
         android:layout_marginBottom="32dp"
         android:text="SINCRONIZAR DATOS"
         android:textAppearance="@style/TextAppearance.App.BodyMedium"
         android:textStyle="bold"
+        android:contentDescription="Sincronizar datos con el servidor"
         app:cornerRadius="16dp"
         app:icon="@drawable/ic_sync"
         app:iconGravity="textStart"

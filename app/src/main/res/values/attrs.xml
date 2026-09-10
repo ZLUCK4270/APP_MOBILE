@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StatusCardView">
+        <attr name="cardTitle" format="string" />
+        <attr name="cardUnit" format="string" />
+        <attr name="cardIcon" format="reference" />
+        <attr name="cardTintColor" format="color" />
+    </declare-styleable>
+</resources>

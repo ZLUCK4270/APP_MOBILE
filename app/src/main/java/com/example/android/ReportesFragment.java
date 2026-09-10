@@ -1,7 +1,12 @@
 package com.example.android;
 
 import android.app.DatePickerDialog;
-import android.database.Cursor;
+import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,41 +14,35 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.button.MaterialButton;
-import com.example.android.data.database.DatabaseHelper;
 import com.example.android.models.Reporte;
+import com.example.android.ui.reportes.ReportesViewModel;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import android.graphics.pdf.PdfDocument;
-import android.graphics.Paint;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import java.io.File;
-import java.io.FileOutputStream;
-import android.net.Uri;
-import androidx.core.content.FileProvider;
-import android.content.Intent;
 
-
-/**
- * ReportesFragment — Historial de recolecciones con filtros dinámicos.
- * Muestra los registros en un RecyclerView con filtros por fecha y tipo de residuo.
- * Incluye botón para exportar/compartir reportes.
- */
 public class ReportesFragment extends Fragment {
 
     private MaterialButton btnFechaFiltro, btnLimpiarFiltros, btnExportar;
     private AutoCompleteTextView actvResiduoFiltro;
     private RecyclerView rvReportes;
     private ReporteAdapter adapter;
-    private DatabaseHelper dbHelper;
     private String fechaSeleccionada = "";
+    private ReportesViewModel viewModel;
+    
+    private List<Reporte> reportesActuales = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,49 +51,49 @@ public class ReportesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reportes, container, false);
 
-        // Inicializar componentes
-        dbHelper = new DatabaseHelper(requireContext());
+        viewModel = new ViewModelProvider(this).get(ReportesViewModel.class);
+
         btnFechaFiltro = view.findViewById(R.id.btnFechaFiltro);
         btnLimpiarFiltros = view.findViewById(R.id.btnLimpiarFiltros);
         actvResiduoFiltro = view.findViewById(R.id.spinnerResiduo);
         btnExportar = view.findViewById(R.id.btnExportar);
         rvReportes = view.findViewById(R.id.rvReportes);
 
-        // Configurar RecyclerView
         rvReportes.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ReporteAdapter(new ArrayList<>());
         rvReportes.setAdapter(adapter);
 
-        // Cargar filtros y datos
-        cargarFiltroResiduos();
+        setupObservers();
         configurarListeners();
-        cargarReportes();
 
         return view;
     }
 
-    /**
-     * Carga el dropdown de tipos de residuo con opción "Todos" por defecto.
-     */
-    private void cargarFiltroResiduos() {
-        List<String> residuos = dbHelper.obtenerResiduos();
-        residuos.add(0, "Todos"); // Opción por defecto
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                residuos);
-        actvResiduoFiltro.setAdapter(spinnerAdapter);
-        actvResiduoFiltro.setText("Todos", false);
+    private void setupObservers() {
+        viewModel.getResiduos().observe(getViewLifecycleOwner(), residuos -> {
+            if (residuos != null) {
+                residuos.add(0, "Todos");
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        residuos);
+                actvResiduoFiltro.setAdapter(spinnerAdapter);
+                actvResiduoFiltro.setText("Todos", false);
+                cargarReportes();
+            }
+        });
+
+        viewModel.getReportes().observe(getViewLifecycleOwner(), reportes -> {
+            if (reportes != null) {
+                reportesActuales = reportes;
+                adapter.actualizarDatos(reportes);
+            }
+        });
     }
 
-    /**
-     * Configura los listeners de los botones de filtro.
-     */
     private void configurarListeners() {
-        // Filtro de fecha: abre DatePickerDialog
         btnFechaFiltro.setOnClickListener(v -> mostrarDatePicker());
 
-        // Limpiar todos los filtros
         btnLimpiarFiltros.setOnClickListener(v -> {
             fechaSeleccionada = "";
             btnFechaFiltro.setText("Fecha");
@@ -102,19 +101,12 @@ public class ReportesFragment extends Fragment {
             cargarReportes();
         });
 
-        // Filtro de residuo: recargar al seleccionar
         actvResiduoFiltro.setOnItemClickListener((parent, view, position, id) ->
                 cargarReportes());
 
-        // Botón exportar/compartir
-        btnExportar.setOnClickListener(v -> {
-            generarYCompartirPDF();
-        });
+        btnExportar.setOnClickListener(v -> generarYCompartirPDF());
     }
 
-    /**
-     * Muestra un DatePickerDialog para seleccionar fecha de filtro.
-     */
     private void mostrarDatePicker() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -132,66 +124,38 @@ public class ReportesFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    /**
-     * Ejecuta la query filtrada y actualiza el RecyclerView.
-     */
     private void cargarReportes() {
         String residuoFiltro = actvResiduoFiltro.getText().toString();
-        Cursor cursor = dbHelper.obtenerReportes(fechaSeleccionada, residuoFiltro);
-        List<Reporte> lista = new ArrayList<>();
-
-        if (cursor.moveToFirst()) {
-            do {
-                Reporte r = new Reporte(
-                        cursor.getInt(0),       // idRecoleccion
-                        cursor.getString(1),    // Cliente (RazonSocial)
-                        cursor.getString(2),    // Residuo (Nombre)
-                        cursor.getDouble(3),    // Peso
-                        cursor.getDouble(4),    // Volumen
-                        cursor.getString(5),    // Fecha
-                        cursor.getInt(6) == 1   // isSynced
-                );
-                lista.add(r);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        adapter.actualizarDatos(lista);
+        viewModel.loadReportes(fechaSeleccionada, residuoFiltro);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        cargarReportes(); // Refrescar al volver a esta pestaña
+        cargarReportes();
     }
 
-    /**
-     * Genera un reporte PDF con los datos actuales del RecyclerView y abre 
-     * un Intent para compartirlo usando FileProvider.
-     */
     private void generarYCompartirPDF() {
-        if (adapter.getItemCount() == 0) {
+        if (adapter.getItemCount() == 0 || reportesActuales.isEmpty()) {
             Toast.makeText(getContext(), "No hay datos para exportar", Toast.LENGTH_SHORT).show();
             return;
         }
 
         PdfDocument document = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create(); // A4
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
         PdfDocument.Page page = document.startPage(pageInfo);
 
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
         
-        // Título
         paint.setTextSize(24);
         paint.setColor(Color.BLACK);
         canvas.drawText("Reporte de Recolección de Residuos", 40, 50, paint);
         
-        // Filtros aplicados
         paint.setTextSize(14);
         canvas.drawText("Filtros: Fecha=" + (fechaSeleccionada.isEmpty() ? "Todas" : fechaSeleccionada) + 
                         ", Tipo=" + actvResiduoFiltro.getText().toString(), 40, 80, paint);
 
-        // Cabecera tabla
         paint.setTextSize(12);
         paint.setFakeBoldText(true);
         canvas.drawText("ID", 40, 120, paint);
@@ -201,33 +165,29 @@ public class ReportesFragment extends Fragment {
         canvas.drawText("Peso/Vol", 460, 120, paint);
         paint.setFakeBoldText(false);
 
-        // Datos
         int y = 140;
-        Cursor cursor = dbHelper.obtenerReportes(fechaSeleccionada, actvResiduoFiltro.getText().toString());
-        if (cursor.moveToFirst()) {
-            do {
-                if (y > 800) {
-                    // Manejo simple de paginación o corte (simplificado para MVP)
-                    canvas.drawText("... más registros (PDF truncado)", 40, y, paint);
-                    break;
-                }
-                canvas.drawText(String.valueOf(cursor.getInt(0)), 40, y, paint);
-                canvas.drawText(cursor.getString(5), 80, y, paint);
-                String cliente = cursor.getString(1);
-                if(cliente.length() > 15) cliente = cliente.substring(0, 15) + "...";
-                canvas.drawText(cliente, 180, y, paint);
-                String residuo = cursor.getString(2);
-                if(residuo.length() > 15) residuo = residuo.substring(0, 15) + "...";
-                canvas.drawText(residuo, 320, y, paint);
-                canvas.drawText(cursor.getDouble(3) + "kg / " + cursor.getDouble(4) + "m3", 460, y, paint);
-                y += 20;
-            } while (cursor.moveToNext());
+        for (Reporte cursor : reportesActuales) {
+            if (y > 800) {
+                canvas.drawText("... más registros (PDF truncado)", 40, y, paint);
+                break;
+            }
+            canvas.drawText(String.valueOf(cursor.getIdRecoleccion()), 40, y, paint);
+            canvas.drawText(cursor.getFecha(), 80, y, paint);
+            
+            String cliente = cursor.getCliente();
+            if(cliente.length() > 15) cliente = cliente.substring(0, 15) + "...";
+            canvas.drawText(cliente, 180, y, paint);
+            
+            String residuo = cursor.getResiduo();
+            if(residuo.length() > 15) residuo = residuo.substring(0, 15) + "...";
+            canvas.drawText(residuo, 320, y, paint);
+            
+            canvas.drawText(cursor.getPeso() + "kg / " + cursor.getVolumen() + "m3", 460, y, paint);
+            y += 20;
         }
-        cursor.close();
 
         document.finishPage(page);
 
-        // Guardar archivo en caché
         try {
             File pdfDir = new File(requireContext().getCacheDir(), "reportes");
             if (!pdfDir.exists()) pdfDir.mkdirs();
@@ -238,7 +198,6 @@ public class ReportesFragment extends Fragment {
             document.close();
             fos.close();
 
-            // Compartir con FileProvider
             Uri pdfUri = FileProvider.getUriForFile(requireContext(), 
                     requireContext().getApplicationContext().getPackageName() + ".fileprovider", 
                     file);

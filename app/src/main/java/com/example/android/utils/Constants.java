@@ -11,13 +11,13 @@ public class Constants {
     // ============================================================
 
     /** URL base para emulador Android (10.0.2.2 = localhost del host) */
-    public static final String API_BASE_URL_EMULATOR = "http://10.0.2.2:8000/api/v1";
+    public static final String API_BASE_URL_EMULATOR = "http://10.0.2.2:8000/api/v1/";
 
     /** URL base para dispositivo físico en red local */
-    public static final String API_BASE_URL_LOCAL = "http://192.168.1.100:8000/api/v1";
+    public static final String API_BASE_URL_LOCAL = "http://192.168.1.100:8000/api/v1/";
 
     /** URL activa — apuntando al servidor en producción (Render) */
-    public static final String API_BASE_URL = "https://app-mobile-1.onrender.com/api/v1";
+    public static final String API_BASE_URL = "https://app-mobile-1.onrender.com/api/v1/";
 
     // ============================================================
     // Endpoints de la API
@@ -74,4 +74,5 @@ public class Constants {
     public static final double VOLUMEN_MAX = 1000.0;
     public static final double DENSIDAD_MIN = 10.0;
     public static final double DENSIDAD_MAX = 5000.0;
+    public static final double DENSIDAD_POR_DEFECTO = 100.0; // 1 m3 = 100 kg
 }

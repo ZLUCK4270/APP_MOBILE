@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Setup NavigationUI with DrawerLayout
             appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_dashboard, R.id.navigation_scanner, 
-                    R.id.navigation_reportes, R.id.navigation_recoleccion)
+                    R.id.navigation_dashboard, R.id.navigation_reportes, 
+                    R.id.navigation_recoleccion)
                     .setOpenableLayout(drawerLayout)
                     .build();
 

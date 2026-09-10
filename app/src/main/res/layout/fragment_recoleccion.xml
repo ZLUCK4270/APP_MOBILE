@@ -20,30 +20,58 @@
             app:strokeWidth="0dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="Botón para escanear código QR de contenedor"
+            android:clickable="true"
+            android:focusable="true">
             
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent">
                 
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_scan"
-                    app:tint="?attr/colorOnPrimaryContainer"/>
-                
+                <LinearLayout
+                    android:id="@+id/llScanPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_scan"
+                        app:tint="?attr/colorOnPrimaryContainer"
+                        android:importantForAccessibility="no"/>
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ESCANEAR CONTENEDOR"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:textColor="?attr/colorOnPrimaryContainer"/>
+                </LinearLayout>
+
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/viewFinder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+                    
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvOverlayResult"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ESCANEAR CONTENEDOR"
-                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                    android:layout_gravity="bottom"
+                    android:background="#A8000000"
+                    android:textColor="#4CAF50"
+                    android:gravity="center"
+                    android:padding="12dp"
                     android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:textColor="?attr/colorOnPrimaryContainer"/>
-            </LinearLayout>
+                    android:visibility="gone" />
+            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -75,7 +103,9 @@
                 android:id="@+id/actvCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                android:contentDescription="Seleccionar cliente de la lista"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
         
@@ -97,7 +127,9 @@
                 android:id="@+id/actvResiduo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                android:contentDescription="Seleccionar tipo de residuo"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -128,9 +160,11 @@
                     android:id="@+id/etPeso"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:inputType="numberDecimal"
                     android:fontFamily="@font/manrope"
                     android:textSize="20sp"
+                    android:contentDescription="Campo para ingresar el peso en kilogramos"
                     android:textStyle="bold"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,9 +183,11 @@
                     android:id="@+id/etVolumen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:inputType="numberDecimal"
                     android:fontFamily="@font/manrope"
                     android:textSize="20sp"
+                    android:contentDescription="Campo para ingresar el volumen en metros cúbicos"
                     android:textStyle="bold"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -174,19 +210,23 @@
                 android:id="@+id/etObservacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:inputType="textMultiLine"
+                android:contentDescription="Campo de texto opcional para observaciones"
                 android:minLines="2"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardarRecoleccion"
             android:layout_width="0dp"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
             android:layout_marginTop="32dp"
             android:text="GUARDAR REGISTRO"
             android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:textStyle="bold"
+            android:contentDescription="Botón para guardar el registro de recolección"
             app:icon="@drawable/ic_reports"
             app:iconGravity="textStart"
             app:cornerRadius="12dp"

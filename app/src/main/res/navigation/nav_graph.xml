@@ -19,10 +19,7 @@
         android:name="com.example.android.ReportesFragment"
         android:label="Reportes" />
 
-    <fragment
-        android:id="@+id/navigation_scanner"
-        android:name="com.example.android.ScannerFragment"
-        android:label="Scanner" />
+
 
     <fragment
         android:id="@+id/navigation_profile"

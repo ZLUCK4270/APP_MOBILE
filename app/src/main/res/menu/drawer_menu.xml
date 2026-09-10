@@ -8,10 +8,7 @@
             android:id="@+id/navigation_dashboard"
             android:icon="@android:drawable/ic_menu_compass"
             android:title="Dashboard" />
-        <item
-            android:id="@+id/navigation_scanner"
-            android:icon="@android:drawable/ic_menu_camera"
-            android:title="Escáner Inteligente" />
+
         <item
             android:id="@+id/navigation_reportes"
             android:icon="@android:drawable/ic_menu_agenda"

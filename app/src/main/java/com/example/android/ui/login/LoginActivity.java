@@ -10,7 +10,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import com.example.android.api.ApiClient;
-import com.example.android.data.database.DatabaseHelper;
+import com.example.android.data.local.EcolimDatabase;
+import com.example.android.data.local.dao.EcolimDao;
+import com.example.android.data.local.entity.UsuarioEntity;
 import com.example.android.utils.SessionManager;
 import com.example.android.MainActivity;
 import com.example.android.R;
@@ -22,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText etCorreo, etPassword;
     MaterialButton btnLogin;
     TextView tvRegister;
-    DatabaseHelper dbHelper;
+    EcolimDao dao;
     SessionManager sessionManager;
 
     @Override
@@ -37,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        dbHelper = new DatabaseHelper(this);
+        dao = EcolimDatabase.getDatabase(this).ecolimDao();
         etCorreo = findViewById(R.id.etCorreo);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -81,11 +83,21 @@ public class LoginActivity extends AppCompatActivity {
                             String rol = json.getString("rol");
                             
                             // Guardar en base local para offline
-                            dbHelper.registrarUsuarioLocal(userId, nombre, correo, password);
+                            EcolimDatabase.databaseWriteExecutor.execute(() -> {
+                                UsuarioEntity user = new UsuarioEntity();
+                                user.idUsuario = userId;
+                                user.nombre = nombre;
+                                user.correo = correo;
+                                user.password = password;
+                                user.rol = rol;
+                                dao.insertUsuario(user);
+                            });
 
-                            sessionManager.crearSesion(userId, nombre, correo, rol);
-                            Toast.makeText(LoginActivity.this, "Bienvenido, " + nombre, Toast.LENGTH_SHORT).show();
-                            navegarAlDashboard();
+                            runOnUiThread(() -> {
+                                sessionManager.crearSesion(userId, nombre, correo, rol);
+                                Toast.makeText(LoginActivity.this, "Bienvenido, " + nombre, Toast.LENGTH_SHORT).show();
+                                navegarAlDashboard();
+                            });
                         } catch (Exception e) {
                             fallBackLocal(correo, password);
                         }
@@ -104,18 +116,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void fallBackLocal(String correo, String password) {
-        btnLogin.setEnabled(true);
-        btnLogin.setText("Ingresar");
-        
-        if (dbHelper.login(correo, password)) {
-            int userId = dbHelper.getUsuarioId(correo);
-            String nombre = dbHelper.getNombreUsuario(correo);
-            sessionManager.crearSesion(userId, nombre, correo, "OPERARIO");
-            Toast.makeText(this, "Bienvenido (Modo Offline), " + nombre, Toast.LENGTH_SHORT).show();
-            navegarAlDashboard();
-        } else {
-            Toast.makeText(this, "Credenciales incorrectas o sin conexión", Toast.LENGTH_LONG).show();
-        }
+        EcolimDatabase.databaseWriteExecutor.execute(() -> {
+            UsuarioEntity user = dao.login(correo, password);
+            runOnUiThread(() -> {
+                btnLogin.setEnabled(true);
+                btnLogin.setText("Ingresar");
+                
+                if (user != null) {
+                    sessionManager.crearSesion(user.idUsuario, user.nombre, user.correo, user.rol != null ? user.rol : "OPERARIO");
+                    Toast.makeText(this, "Bienvenido (Modo Offline), " + user.nombre, Toast.LENGTH_SHORT).show();
+                    navegarAlDashboard();
+                } else {
+                    Toast.makeText(this, "Credenciales incorrectas o sin conexión", Toast.LENGTH_LONG).show();
+                }
+            });
+        });
     }
 
     private void navegarAlDashboard() {

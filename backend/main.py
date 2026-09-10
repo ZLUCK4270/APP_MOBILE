@@ -8,11 +8,27 @@ models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="ECOLIM API", version="1.0.0")
 
+@app.post("/api/v1/auth/register")
+def register(request: schemas.RegisterRequest, db: Session = Depends(database.get_db)):
+    existing_user = db.query(models.Usuario).filter(models.Usuario.correo == request.correo).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="El correo ya está registrado")
+    
+    new_user = models.Usuario(
+        correo=request.correo,
+        password_hash=request.password, # MVP: Sin hash por ahora
+        rol="OPERARIO"
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "Usuario registrado exitosamente"}
+
 @app.post("/api/v1/auth/login", response_model=schemas.TokenResponse)
 def login(request: schemas.LoginRequest, db: Session = Depends(database.get_db)):
     # Lógica simplificada. En producción: Hash de password y JWT real.
     user = db.query(models.Usuario).filter(models.Usuario.correo == request.correo).first()
-    if not user or request.password != "123456": # Dummy check por MVP
+    if not user or user.password_hash != request.password: # MVP check
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
     
     return {"access_token": "dummy_jwt_token_for_" + str(user.id), "token_type": "bearer"}

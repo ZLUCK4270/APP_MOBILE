@@ -204,7 +204,7 @@ public class ApiClient {
     public static void registrarUsuario(JSONObject payload, ApiCallback callback) {
         RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
         Request request = new Request.Builder()
-                .url(Constants.API_BASE_URL + "auth/register")
+                .url(Constants.API_BASE_URL + "/auth/register")
                 .post(body)
                 .build();
         
@@ -214,7 +214,7 @@ public class ApiClient {
     public static void loginUsuario(JSONObject payload, ApiCallback callback) {
         RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
         Request request = new Request.Builder()
-                .url(Constants.API_BASE_URL + "auth/login")
+                .url(Constants.API_BASE_URL + "/auth/login")
                 .post(body)
                 .build();
         
@@ -224,7 +224,7 @@ public class ApiClient {
     public static void actualizarPerfil(int userId, JSONObject payload, ApiCallback callback) {
         RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
         Request request = new Request.Builder()
-                .url(Constants.API_BASE_URL + "usuarios/perfil/" + userId)
+                .url(Constants.API_BASE_URL + "/usuarios/perfil/" + userId)
                 .put(body)
                 .build();
         

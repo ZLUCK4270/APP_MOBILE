@@ -16,6 +16,12 @@ class SyncPayload(BaseModel):
     dispositivo_id: str
     registros: List[RecoleccionSync]
 
+class RegisterRequest(BaseModel):
+    nombre: str
+    apellido: str
+    correo: str
+    password: str
+
 class LoginRequest(BaseModel):
     correo: str
     password: str

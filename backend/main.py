@@ -15,6 +15,7 @@ def register(request: schemas.RegisterRequest, db: Session = Depends(database.ge
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
     
     new_user = models.Usuario(
+        nombre=f"{request.nombre} {request.apellido}".strip(),
         correo=request.correo,
         password_hash=request.password, # MVP: Sin hash por ahora
         rol="OPERARIO"
@@ -31,8 +32,23 @@ def login(request: schemas.LoginRequest, db: Session = Depends(database.get_db))
     if not user or user.password_hash != request.password: # MVP check
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
     
-    return {"access_token": "dummy_jwt_token_for_" + str(user.id), "token_type": "bearer"}
+    return {
+        "access_token": "dummy_jwt_token_for_" + str(user.id),
+        "token_type": "bearer",
+        "id_usuario": user.id,
+        "usuario": user.nombre if user.nombre else "Usuario",
+        "rol": user.rol
+    }
 
+@app.post("/api/v1/auth/forgot-password")
+def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(database.get_db)):
+    user = db.query(models.Usuario).filter(models.Usuario.correo == request.correo).first()
+    if not user:
+        # Prevent email enumeration by returning a generic success message
+        return {"message": "Si el correo está registrado, se han enviado las instrucciones de recuperación."}
+    
+    # In a real application, we would generate a token and send an email here.
+    return {"message": "Si el correo está registrado, se han enviado las instrucciones de recuperación."}
 @app.post("/api/v1/sync")
 def sync_records(payload: schemas.SyncPayload, db: Session = Depends(database.get_db)):
     # Endpoint para recibir registros offline

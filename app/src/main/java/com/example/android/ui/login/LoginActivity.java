@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText etCorreo, etPassword;
     MaterialButton btnLogin;
-    TextView tvRegister;
+    TextView tvRegister, tvForgotPassword;
     EcolimDao dao;
     SessionManager sessionManager;
 
@@ -44,9 +44,14 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
         tvRegister.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        });
+
+        tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
         btnLogin.setOnClickListener(v -> {

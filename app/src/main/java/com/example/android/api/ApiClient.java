@@ -221,6 +221,21 @@ public class ApiClient {
         ejecutarPost(request, callback);
     }
 
+    public static void recuperarPassword(String correo, ApiCallback callback) {
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("correo", correo);
+            RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
+            Request request = new Request.Builder()
+                    .url(Constants.API_BASE_URL + "auth/forgot-password")
+                    .post(body)
+                    .build();
+            ejecutarPost(request, callback);
+        } catch (Exception e) {
+            callback.onError("Error al preparar la solicitud: " + e.getMessage());
+        }
+    }
+
     public static void actualizarPerfil(int userId, JSONObject payload, ApiCallback callback) {
         RequestBody body = RequestBody.create(payload.toString(), JSON_TYPE);
         Request request = new Request.Builder()

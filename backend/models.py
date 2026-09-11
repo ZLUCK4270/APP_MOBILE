@@ -5,6 +5,7 @@ import datetime
 class Usuario(Base):
     __tablename__ = "usuarios"
     id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String)
     correo = Column(String, unique=True, index=True)
     password_hash = Column(String)
     rol = Column(String, default="OPERARIO")

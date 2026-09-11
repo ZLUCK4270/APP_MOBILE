@@ -29,3 +29,9 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
+    id_usuario: int
+    usuario: str
+    rol: str
+
+class ForgotPasswordRequest(BaseModel):
+    correo: str
